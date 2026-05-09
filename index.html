@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clinic Assistant</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #0f172a;
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+
+        /* Floating Chat Button */
+        #chatToggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        /* Chat Window */
+        #chatContainer {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            width: 300px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            display: none;
+            flex-direction: column;
+        }
+
+        #chatHeader {
+            background: #2563eb;
+            color: white;
+            padding: 10px;
+            border-radius: 10px 10px 0 0;
+            text-align: center;
+        }
+
+        #chatBox {
+            height: 250px;
+            overflow-y: auto;
+            padding: 10px;
+            background: #f1f5f9;
+        }
+
+        .user {
+            text-align: right;
+            color: #2563eb;
+            margin: 5px;
+        }
+
+        .bot {
+            text-align: left;
+            color: #111;
+            margin: 5px;
+        }
+
+        #chatInputArea {
+            display: flex;
+            border-top: 1px solid #ddd;
+        }
+
+        #chatInput {
+            flex: 1;
+            padding: 8px;
+            border: none;
+        }
+
+        button.sendBtn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Clinic Assistant Page</h2>
+<p>This is your main webpage content.</p>
+
+<!-- Floating Chat Button -->
+<button id="chatToggle" onclick="toggleChat()">💬</button>
+
+<!-- Chat Window -->
+<div id="chatContainer">
+    <div id="chatHeader">Diabetes Bot 🤖</div>
+
+    <div id="chatBox"></div>
+
+    <div id="chatInputArea">
+        <input id="chatInput" placeholder="Type..." />
+        <button class="sendBtn" onclick="send()">Send</button>
+    </div>
+</div>
+
+<script>
+function toggleChat() {
+    let box = document.getElementById("chatContainer");
+    box.style.display = box.style.display === "flex" ? "none" : "flex";
+}
+
+async function send() {
+    let input = document.getElementById("chatInput");
+    let chatBox = document.getElementById("chatBox");
+
+    let question = input.value;
+    if (!question) return;
+
+    chatBox.innerHTML += `<div class="user">You: ${question}</div>`;
+
+    let res = await fetch("http://127.0.0.1:8000/chat", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({question: question})
+    });
+
+    let data = await res.json();
+
+    chatBox.innerHTML += `<div class="bot">Bot: ${data.answer}</div>`;
+
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+</script>
+
+</body>
