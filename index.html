@@ -122,7 +122,7 @@ async function send() {
 
     chatBox.innerHTML += `<div class="user">You: ${question}</div>`;
 
-    let res = await fetch("http://127.0.0.1:8000/chat", {
+    let res = await fetch("/chat", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({question: question})
