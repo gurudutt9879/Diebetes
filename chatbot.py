@@ -8,17 +8,18 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_community.document_loaders import PyPDFLoader
 from fastapi.responses import HTMLResponse
-embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
-loader = PyPDFLoader("Diabetes.pdf")
-docs = loader.load()
-
-splitter = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=100)
-
-chunks = splitter.split_documents(docs)
-db = Chroma.from_documents(chunks, embeddings)
-print("Chunks:", len(chunks))
 
 def search(query):
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    loader = PyPDFLoader("Diabetes.pdf")
+    docs = loader.load()
+
+    splitter = RecursiveCharacterTextSplitter(chunk_size=500,chunk_overlap=100)
+
+    chunks = splitter.split_documents(docs)
+    db = Chroma.from_documents(chunks, embeddings)
+    print("Chunks:", len(chunks))
+
     results = db.similarity_search(query, k=3)
     return "\n".join([r.page_content for r in results])
 
