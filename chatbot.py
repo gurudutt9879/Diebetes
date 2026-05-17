@@ -59,7 +59,7 @@ def chat(data: dict):
     question = data["question"]
     return {"answer": ask(question)}
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 def guru():
    with open("index.html", "r") as f:
         return f.read()
